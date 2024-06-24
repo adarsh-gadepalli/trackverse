@@ -1,9 +1,10 @@
-const axios = require('axios');
-require("dotenv").config();
+import axios from 'axios';
+import { config } from 'dotenv';
+config();
 const client_id  = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
 
-module.exports = function getToken() {
+export function getToken() {
 
   return new Promise((resolve, reject) => {
     const authHeader = 'Basic ' + Buffer.from(client_id + ':' + client_secret).toString('base64');

@@ -1,12 +1,3 @@
-const getToken = require('./token_gen');
-
-
- getToken()
-  .then(token => {
-    console.log('Access token:', token);
-  })
-  .catch(error => {
-    console.error('Error getting token:', error);
-  });
-
-  
+export function testFunc(){
+  console.log("hi")
+}
