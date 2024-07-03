@@ -1,7 +1,7 @@
-import { MongoClient, ServerApiVersion} from 'mongodb';
+import { config } from '../globals/load.js';
+import { MongoClient, ServerApiVersion } from "mongodb";
 
-
-const uri = "mongodb+srv://adgadepalli2003:adduCoder1102@mycluster.dolu8l5.mongodb.net/?appName=mycluster";
+const uri = process.env.URI
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {

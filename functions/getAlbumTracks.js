@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export async function getAlbumTracks(albumId) {
   try {
-    const token = 'token';
+    const token = 'BQDRTrRrgkUv2B_p8pBRqXGGj0CZAShDqw5_AozFFlmeIXkI4h9YO3YARVDYaSF7FlaSL8UO6SMV9xIZcaXUA4BuIFd04c_yMDI4cuauPaorKZHZ5Dc';
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + token

@@ -1,7 +1,8 @@
 import Head from 'next/head';
 import { useState, useEffect, useRef } from 'react';
 import { search_album } from '../functions/search';
-import { getAlbumTracks } from '../functions/getAlbumTracks'; 
+import { getAlbumTracks } from '../functions/getAlbumTracks';
+import styles from '../globals/styles.js'
 
 export default function Home() {
   const [albumName, setAlbumName] = useState('');
@@ -36,7 +37,7 @@ export default function Home() {
         setIsDropdownVisible(true);
       } catch (error) {
         console.error('Error fetching albums:', error.message);
-        setAlbums([]); 
+        setAlbums([]);
       }
     } else {
       setAlbums([]);
@@ -48,6 +49,7 @@ export default function Home() {
     setSelectedAlbum(album);
     setIsDropdownVisible(false);
     setAlbumName(album.name);
+    setAlbumTracks([]);
 
     try {
       const tracks = await getAlbumTracks(album.id);
@@ -56,6 +58,12 @@ export default function Home() {
       console.error('Error fetching album tracks:', error.message);
       setAlbumTracks([]);
     }
+  };
+
+  const handleAddToLibrary = (e) => {
+    e.stopPropagation(); // Prevent dropdown from closing on button click
+    console.log('Selected:', selectedAlbum); // Replace with your desired functionality
+    // Implement your logic to add the selected album to the library
   };
 
   return (
@@ -74,7 +82,7 @@ export default function Home() {
             placeholder="Enter album name"
             onFocus={() => setIsDropdownVisible(true)}
             style={styles.input}
-            ref={searchInputRef} 
+            ref={searchInputRef}
           />
         </form>
 
@@ -104,6 +112,7 @@ export default function Home() {
           <div style={styles.selectedAlbum}>
             <h2 style={styles.selectedAlbumName}>{selectedAlbum.name}</h2>
             <img src={selectedAlbum.imageUrl} alt="Album Cover" style={styles.selectedAlbumImage} />
+            <button onClick={handleAddToLibrary} style={styles.addToLibraryButton}>+</button>
             <p style={styles.selectedArtistName}>by {selectedAlbum.artist}</p>
 
             <h3 style={styles.tracksHeader}>Tracks</h3>
@@ -129,106 +138,3 @@ export default function Home() {
     </div>
   );
 }
-
-const styles = {
-  container: {
-    backgroundColor: '#121212',
-    color: '#fff',
-    minHeight: '100vh',
-    padding: '20px',
-    fontFamily: 'Arial, sans-serif'
-  },
-  main: {
-    maxWidth: '800px',
-    margin: '0 auto',
-    textAlign: 'center'
-  },
-  title: {
-    fontSize: '2.5em',
-    marginBottom: '20px',
-    color: '#1DB954' 
-  },
-  form: {
-    marginBottom: '20px'
-  },
-  input: {
-    width: '100%',
-    padding: '10px',
-    fontSize: '1.2em',
-    borderRadius: '5px',
-    border: 'none',
-    marginBottom: '10px',
-    outline: 'none'
-  },
-  dropdown: {
-    border: '1px solid #333',
-    maxHeight: '200px',
-    overflowY: 'auto',
-    listStyleType: 'none',
-    padding: 0,
-    borderRadius: '5px',
-    backgroundColor: '#222'
-  },
-  dropdownItem: {
-    cursor: 'pointer',
-    padding: '10px',
-    display: 'flex',
-    alignItems: 'center',
-    transition: 'background-color 0.3s'
-  },
-  albumImage: {
-    width: '50px',
-    height: '50px',
-    marginRight: '10px',
-    borderRadius: '5px'
-  },
-  albumName: {
-    fontSize: '1em',
-    fontWeight: 'bold'
-  },
-  artistName: {
-    fontSize: '0.8em',
-    color: '#aaa'
-  },
-  selectedAlbum: {
-    marginTop: '20px',
-    textAlign: 'center'
-  },
-  selectedAlbumName: {
-    fontSize: '2em',
-    marginBottom: '10px'
-  },
-  selectedAlbumImage: {
-    maxWidth: '300px',
-    borderRadius: '10px'
-  },
-  selectedArtistName: {
-    fontSize: '1.2em',
-    color: '#1DB954'
-  },
-  tracksHeader: {
-    fontSize: '1.5em',
-    marginTop: '20px',
-    color: '#1DB954'
-  },
-  tracksList: {
-    listStyleType: 'none',
-    padding: 0,
-    textAlign: 'left'
-  },
-  trackItem: {
-    fontSize: '1.2em',
-    marginBottom: '10px'
-  },
-  noAlbums: {
-    padding: '10px',
-    textAlign: 'center',
-    color: '#aaa'
-  },
-  footer: {
-    marginTop: '40px',
-    textAlign: 'center',
-    fontSize: '0.8em',
-    color: '#666'
-  }
-};

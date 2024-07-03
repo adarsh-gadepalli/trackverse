@@ -1,11 +1,11 @@
 import axios from 'axios';
-
+import { config } from '../globals/load.js';
 
 export async function getToken() {
-  try {
-    const credentials = `${'8459e5c4329341d0a309fac1cfa1b0be'}:${'961f7a90dcc645b3a0e16c171fb3706c'}`;
-    const base64Credentials = btoa(credentials); 
 
+  try {
+    const credentials = `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`;
+    const base64Credentials = Buffer.from(credentials).toString('base64');  
     const authHeader = `Basic ${base64Credentials}`;
 
     const authOptions = {
@@ -33,4 +33,11 @@ export async function getToken() {
     throw new Error(`Error fetching access token: ${error.message}`);
   }
 }
-console.log(getToken())
+
+getToken()
+  .then(token => {
+    console.log("Access token:", token);
+  })
+  .catch(error => {
+    console.error("Failed to get access token:", error.message);
+  });
