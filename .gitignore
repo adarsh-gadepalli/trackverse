@@ -1,4 +1,6 @@
-.next/
-node_modules/
+.next
 .env
-
+.next/
+.vscode
+node_modules
+node_modules
