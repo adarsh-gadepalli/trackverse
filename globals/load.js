@@ -7,7 +7,6 @@ const __dirname = dirname(__filename);
 
 const envFilePath = resolve(__dirname, '../globals/.env');
 
-// configure dotenv path
 config({ path: envFilePath });
 
 export { config };

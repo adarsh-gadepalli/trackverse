@@ -28,6 +28,10 @@ const styles = {
     marginBottom: '10px',
     outline: 'none'
   },
+  goldStarIcon: {
+    color: 'gold', 
+    fontSize: '54px' 
+  },
   dropdown: {
     border: '1px solid #333',
     maxHeight: '200px',
@@ -95,7 +99,7 @@ const styles = {
   },
   addToLibraryButton: {
     fontSize: '1.5em',
-    backgroundColor: '#1DB954',
+    backgroundColor: 'transparent',
     color: '#fff',
     border: 'none',
     borderRadius: '50%',

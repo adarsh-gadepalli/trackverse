@@ -2,7 +2,10 @@ import Head from 'next/head';
 import { useState, useEffect, useRef } from 'react';
 import { search_album } from '../functions/search';
 import { getAlbumTracks } from '../functions/getAlbumTracks';
-import styles from '../globals/styles.js'
+import styles from '../globals/styles.js';
+import AlbumSelection from '../components/albumselection.js'; 
+import AlbumDropdown from '../components/dropdown.js'; 
+import SearchInput from '../components/searchbar.js'; 
 
 export default function Home() {
   const [albumName, setAlbumName] = useState('');
@@ -59,12 +62,39 @@ export default function Home() {
       setAlbumTracks([]);
     }
   };
+  const handleAddToLibrary = async (e) => {
+    e.stopPropagation();
 
-  const handleAddToLibrary = (e) => {
-    e.stopPropagation(); // Prevent dropdown from closing on button click
-    console.log('Selected:', selectedAlbum); // Replace with your desired functionality
-    // Implement your logic to add the selected album to the library
-  };
+    if (selectedAlbum) {
+        try {
+            const payload = {
+                id: selectedAlbum.id,
+                imageURL: selectedAlbum.imageUrl,
+                name: selectedAlbum.name,
+                artist: selectedAlbum.artist
+            };
+            const response = await fetch('http://localhost:3000/api', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Album posted successfully:', result);
+            } else {
+                console.error('Failed to post album:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error posting album:', error.message);
+        }
+    }
+};
+
+
+  
 
   return (
     <div style={styles.container}>
@@ -75,65 +105,33 @@ export default function Home() {
       <main style={styles.main}>
         <h1 style={styles.title}>Search for an Album</h1>
         <form onSubmit={(e) => e.preventDefault()} style={styles.form}>
-          <input
-            type="text"
+          <SearchInput
             value={albumName}
             onChange={handleInputChange}
-            placeholder="Enter album name"
             onFocus={() => setIsDropdownVisible(true)}
-            style={styles.input}
-            ref={searchInputRef}
+            searchInputRef={searchInputRef}
           />
         </form>
 
         {isDropdownVisible && (
-          <ul style={styles.dropdown}>
-            {albums && albums.length > 0 ? (
-              albums.map((album, index) => (
-                <li
-                  key={album.id}
-                  onClick={() => handleSelectAlbum(album)}
-                  style={{ ...styles.dropdownItem, backgroundColor: index % 2 ? '#333' : '#444' }}
-                >
-                  <img src={album.imageUrl} alt="Album Cover" style={styles.albumImage} />
-                  <div>
-                    <div style={styles.albumName}>{album.name}</div>
-                    <div style={styles.artistName}>by {album.artist}</div>
-                  </div>
-                </li>
-              ))
-            ) : (
-              <li style={styles.noAlbums}>No albums found</li>
-            )}
-          </ul>
+          <AlbumDropdown
+            albums={albums}
+            handleSelectAlbum={handleSelectAlbum}
+          />
         )}
 
         {selectedAlbum && (
-          <div style={styles.selectedAlbum}>
-            <h2 style={styles.selectedAlbumName}>{selectedAlbum.name}</h2>
-            <img src={selectedAlbum.imageUrl} alt="Album Cover" style={styles.selectedAlbumImage} />
-            <button onClick={handleAddToLibrary} style={styles.addToLibraryButton}>+</button>
-            <p style={styles.selectedArtistName}>by {selectedAlbum.artist}</p>
-
-            <h3 style={styles.tracksHeader}>Tracks</h3>
-            <ul style={styles.tracksList}>
-              {albumTracks.map((track, index) => (
-                <li key={track.id} style={styles.trackItem}>
-                  <strong>{track.trackNumber}. {track.name}</strong> &ndash;
-                  <span>{track.artists.map(artist => artist.name).join(', ')}</span>
-                  {track.features.length > 0 && (
-                    <span> feat. {track.features.map(feature => feature.name).join(', ')}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <AlbumSelection
+            selectedAlbum={selectedAlbum}
+            albumTracks={albumTracks}
+            handleAddToLibrary={handleAddToLibrary}
+          />
         )}
 
       </main>
 
       <footer style={styles.footer}>
-        {/* Footer content */}
+        <title>footer</title>
       </footer>
     </div>
   );
